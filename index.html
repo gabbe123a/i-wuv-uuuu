@@ -4,84 +4,83 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Vill du va min alla hjärtans dag?</title>
+
   <style>
     :root{
       --yesScale: 1;
       --noScale: 1;
     }
+
     *{ box-sizing: border-box; }
+
     body{
       margin:0;
       min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:#ffffff;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#fff;
+      font-family: Arial, sans-serif;
       overflow:hidden;
     }
 
     .card{
       width:min(900px, 92vw);
       text-align:center;
-      padding:24px 16px 32px;
+      padding:24px;
+    }
+
+    h1{
+      font-size: clamp(28px, 5vw, 60px);
+      color:#e11d48;
+      margin-bottom:20px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
     }
 
     .hero{
-      width:min(800px, 92vw);
-      height:auto;
-      max-height:55vh;
+      width:min(700px, 90vw);
+      max-height:50vh;
       object-fit:contain;
-      border-radius:12px;
-      user-select:none;
-      -webkit-user-drag:none;
+      margin-bottom:20px;
     }
 
     .buttons{
-      margin-top:18px;
       display:flex;
-      gap:14px;
+      gap:15px;
       justify-content:center;
       flex-wrap:wrap;
     }
 
     button{
-      border:0;
-      padding:14px 22px;
-      border-radius:999px;
-      font-size:18px;
+      border:none;
+      padding:14px 28px;
+      border-radius:50px;
+      font-size:20px;
       cursor:pointer;
-      box-shadow: 0 10px 22px rgba(0,0,0,.12);
-      transition: transform .12s ease, opacity .12s ease;
-      touch-action: manipulation;
+      transition: transform .15s ease;
     }
 
     #yesBtn{
       background:#22c55e;
-      color:#fff;
+      color:white;
       transform: scale(var(--yesScale));
     }
 
     #noBtn{
       background:#ef4444;
-      color:#fff;
+      color:white;
       transform: scale(var(--noScale));
     }
 
-    /* När Ja tar över skärmen */
     .fullscreen-yes #yesBtn{
       position:fixed;
       inset:0;
       width:100vw;
       height:100vh;
       border-radius:0;
-      font-size: clamp(28px, 6vw, 80px);
-      box-shadow:none;
+      font-size: clamp(30px, 8vw, 100px);
       transform:none !important;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
+      z-index:999;
     }
 
     .fullscreen-yes #noBtn{
@@ -89,85 +88,65 @@
       pointer-events:none;
     }
 
-    /* Tackmeddelande */
     .message{
-      font-size: clamp(22px, 4vw, 56px);
-      font-weight:800;
-      color:#111827;
-      line-height:1.1;
-      margin:0;
-    }
-
-    .sub{
-      margin-top:10px;
-      font-size:16px;
-      color:#6b7280;
+      font-size: clamp(24px, 5vw, 60px);
+      font-weight:bold;
+      color:#111;
     }
   </style>
 </head>
+
 <body>
   <main class="card" id="card">
-    <!-- Byt src till din bildfil om du vill lägga den i repot (t.ex. "Ofrälse.png") -->
-    <img class="hero" src="Ofrälse.png" alt="Vill du va min alla hjärtans dag?" onerror="this.style.display='none'">
+    
+    <h1>Vill du va min alla hjärtans dag??? ❤️</h1>
 
-    <div class="buttons" id="buttons">
-      <button id="yesBtn" aria-label="Ja">Ja</button>
-      <button id="noBtn" aria-label="Nej">Nej</button>
+    <img class="hero" src="Ofrälse.png" alt="Alla hjärtans dag" onerror="this.style.display='none'">
+
+    <div class="buttons">
+      <button id="yesBtn">Ja</button>
+      <button id="noBtn">Nej</button>
     </div>
+
   </main>
 
   <script>
     const root = document.documentElement;
-    const card = document.getElementById("card");
-    const buttons = document.getElementById("buttons");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn  = document.getElementById("noBtn");
+    const card = document.getElementById("card");
 
     let yesScale = 1;
     let noScale = 1;
 
-    // Hur snabbt det växer/krymper
-    const YES_GROW = 1.22;
-    const NO_SHRINK = 0.86;
-
-    // När Ja anses "över hela skärmen"
+    const YES_GROW = 1.25;
+    const NO_SHRINK = 0.85;
     const FULLSCREEN_THRESHOLD = 8;
 
-    function applyScales(){
-      root.style.setProperty("--yesScale", yesScale.toFixed(4));
-      root.style.setProperty("--noScale", Math.max(noScale, 0.05).toFixed(4));
-    }
-
-    function goFullscreenYes(){
-      document.body.classList.add("fullscreen-yes");
-      // Ge lite tydlighet: text på Ja-knappen
-      yesBtn.textContent = "JAAA 💖";
-    }
-
-    function showLoveMessage(){
-      // Rensa innehåll och visa meddelande
-      card.innerHTML = `
-        <p class="message">awww tack så  mycket jag älskar dig också</p>
-        <div class="sub">💞</div>
-      `;
+    function updateSize(){
+      root.style.setProperty("--yesScale", yesScale);
+      root.style.setProperty("--noScale", noScale);
     }
 
     noBtn.addEventListener("click", () => {
       yesScale *= YES_GROW;
       noScale *= NO_SHRINK;
+      updateSize();
 
-      applyScales();
-
-      if (yesScale >= FULLSCREEN_THRESHOLD){
-        goFullscreenYes();
+      if(yesScale >= FULLSCREEN_THRESHOLD){
+        document.body.classList.add("fullscreen-yes");
       }
     });
 
     yesBtn.addEventListener("click", () => {
-      showLoveMessage();
+      card.innerHTML = `
+        <p class="message">
+          awww tack så  mycket jag älskar dig också 💖
+        </p>
+      `;
     });
 
-    applyScales();
+    updateSize();
   </script>
 </body>
 </html>
